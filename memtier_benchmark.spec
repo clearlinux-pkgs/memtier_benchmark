@@ -4,7 +4,7 @@
 #
 Name     : memtier_benchmark
 Version  : 1.2.17
-Release  : 2
+Release  : 3
 URL      : https://github.com/RedisLabs/memtier_benchmark/archive/1.2.17.tar.gz
 Source0  : https://github.com/RedisLabs/memtier_benchmark/archive/1.2.17.tar.gz
 Summary  : No detailed summary available
@@ -12,6 +12,7 @@ Group    : Development/Tools
 License  : GPL-2.0
 Requires: memtier_benchmark-bin = %{version}-%{release}
 Requires: memtier_benchmark-data = %{version}-%{release}
+Requires: memtier_benchmark-license = %{version}-%{release}
 Requires: memtier_benchmark-man = %{version}-%{release}
 BuildRequires : pcre-dev
 BuildRequires : pkgconfig(bash-completion)
@@ -27,6 +28,7 @@ memtier_benchmark is a command line utility developed by Redis Labs (formerly Ga
 Summary: bin components for the memtier_benchmark package.
 Group: Binaries
 Requires: memtier_benchmark-data = %{version}-%{release}
+Requires: memtier_benchmark-license = %{version}-%{release}
 
 %description bin
 bin components for the memtier_benchmark package.
@@ -40,6 +42,14 @@ Group: Data
 data components for the memtier_benchmark package.
 
 
+%package license
+Summary: license components for the memtier_benchmark package.
+Group: Default
+
+%description license
+license components for the memtier_benchmark package.
+
+
 %package man
 Summary: man components for the memtier_benchmark package.
 Group: Default
@@ -50,27 +60,34 @@ man components for the memtier_benchmark package.
 
 %prep
 %setup -q -n memtier_benchmark-1.2.17
+cd %{_builddir}/memtier_benchmark-1.2.17
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
-export LANG=C
-export SOURCE_DATE_EPOCH=1559636608
-export LDFLAGS="${LDFLAGS} -fno-lto"
+export LANG=C.UTF-8
+export SOURCE_DATE_EPOCH=1604608418
+export GCC_IGNORE_WERROR=1
+export CFLAGS="$CFLAGS -fno-lto "
+export FCFLAGS="$FFLAGS -fno-lto "
+export FFLAGS="$FFLAGS -fno-lto "
+export CXXFLAGS="$CXXFLAGS -fno-lto "
 %reconfigure --disable-static
 make  %{?_smp_mflags}
 
 %check
-export LANG=C
+export LANG=C.UTF-8
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
-make VERBOSE=1 V=1 %{?_smp_mflags} check
+make %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1559636608
+export SOURCE_DATE_EPOCH=1604608418
 rm -rf %{buildroot}
+mkdir -p %{buildroot}/usr/share/package-licenses/memtier_benchmark
+cp %{_builddir}/memtier_benchmark-1.2.17/COPYING %{buildroot}/usr/share/package-licenses/memtier_benchmark/075d599585584bb0e4b526f5c40cb6b17e0da35a
 %make_install
 
 %files
@@ -83,6 +100,10 @@ rm -rf %{buildroot}
 %files data
 %defattr(-,root,root,-)
 /usr/share/bash-completion/completions/memtier_benchmark
+
+%files license
+%defattr(0644,root,root,0755)
+/usr/share/package-licenses/memtier_benchmark/075d599585584bb0e4b526f5c40cb6b17e0da35a
 
 %files man
 %defattr(0644,root,root,0755)
