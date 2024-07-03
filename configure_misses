@@ -1,3 +1,6 @@
 Configure miss: g++ option to enable C++11 features
+Configure miss: g++ option to enable C++11 features
 Configure miss: gai_strerror in -lsocket
+Configure miss: gai_strerror in -lsocket
+Configure miss: x86_64-generic-linux-gnu-file
 Configure miss: x86_64-generic-linux-gnu-file
